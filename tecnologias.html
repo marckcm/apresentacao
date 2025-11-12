@@ -1,0 +1,824 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Análise Interativa da Página "Novembro Azul"</title>
+
+    <!-- Reveal.js e Syntax Highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/theme/serif.min.css" id="theme">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/github.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* Estilos da Apresentação */
+        .reveal h2, .reveal h3, .reveal h4 { color: #0056b3; text-transform: none; }
+        .reveal .two-columns { display: flex; gap: 25px; align-items: flex-start; margin-top: 20px; }
+        .reveal .column { flex: 1; min-width: 0; }
+        .reveal .column.code-col { flex-basis: 55%; }
+        .reveal .column.demo-col { flex-basis: 45%; }
+        .reveal .live-demo {
+            border: 2px solid #e0e0e0; border-radius: 8px;
+            background: #fdfdfd; transform: scale(0.9); transform-origin: top left;
+            width: 111%; /* Compensa o scale */
+        }
+        .reveal pre { width: 100%; margin-top: 0 !important; font-size: 0.8em; }
+        .reveal pre code { max-height: 50vh; }
+        .reveal .navigation-tip { font-size: 0.7em; color: #555; margin-top: 30px; }
+        .reveal .explanation { font-size: 0.8em; text-align: left; margin-bottom: 15px; }
+        .reveal .column h4 { margin-top: 0; text-align: center; margin-bottom: 10px; }
+        .reveal .feature-list { text-align: left; font-size: 0.8em; margin-left: 20px; }
+        .reveal .feature-list li { margin-bottom: 8px; }
+        .reveal .tech-badge { 
+            display: inline-block; 
+            background-color: #e9ecef; 
+            padding: 4px 8px; 
+            border-radius: 4px; 
+            font-size: 0.7em; 
+            margin: 2px;
+        }
+        .reveal .code-highlight { background-color: #fff3cd; padding: 2px 4px; border-radius: 3px; }
+        .reveal .code-comment { color: #6a737d; font-style: italic; }
+
+        /* Estilos da Página Novembro Azul (escopados para não afetar a apresentação) */
+        .demo-container {
+            --azul-principal: #007bff; --azul-claro: #cce5ff; --azul-escuro: #0056b3;
+            --cinza-claro: #f8f9fa; --cinza-escuro: #343a40; --branco: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--cinza-escuro); line-height: 1.6; font-size: 16px;
+        }
+        .demo-container * { margin: 0; padding: 0; box-sizing: border-box; }
+        .demo-container header { background: linear-gradient(135deg, var(--azul-principal), var(--azul-escuro)); color: var(--branco); padding: 1.5rem 1rem; text-align: center; }
+        .demo-container .logo-container { display: flex; justify-content: center; align-items: center; }
+        .demo-container .logo { width: 50px; height: 50px; background-color: var(--branco); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-right: 1rem; }
+        .demo-container .logo i { color: var(--azul-principal); font-size: 1.8rem; font-style: normal; }
+        .demo-container h1 { font-size: 1.8rem; margin-bottom: 0.2rem; }
+        .demo-container .subtitle { font-size: 0.9rem; }
+        .demo-container nav { background-color: var(--branco); box-shadow: 0 2px 5px rgba(0,0,0,0.1); position: relative; }
+        .demo-container .nav-container { display: flex; justify-content: space-between; align-items: center; padding: 0 1rem; }
+        .demo-container .nav-links { display: flex; list-style: none; }
+        .demo-container .nav-link { padding: 1rem; text-decoration: none; color: var(--cinza-escuro); font-weight: 500; transition: all 0.3s ease; display: block; }
+        .demo-container .nav-link:hover { background-color: var(--azul-claro); color: var(--azul-escuro); }
+        .demo-container .hamburger { display: none; flex-direction: column; cursor: pointer; padding: 0.5rem; }
+        .demo-container .hamburger span { width: 25px; height: 3px; background-color: var(--azul-escuro); margin: 3px 0; transition: 0.3s; border-radius: 2px; }
+        .demo-container .hamburger.active span:nth-child(1) { transform: rotate(-45deg) translate(-5px, 6px); }
+        .demo-container .hamburger.active span:nth-child(2) { opacity: 0; }
+        .demo-container .hamburger.active span:nth-child(3) { transform: rotate(45deg) translate(-5px, -6px); }
+        .demo-container .lgpd-notice { background-color: var(--azul-claro); border: 2px solid var(--azul-principal); padding: 1.5rem; border-radius: 8px; font-size: 0.9em; text-align: center; }
+        .demo-container .lgpd-header { background-color: var(--azul-escuro); color: var(--branco); padding: 0.5rem 1rem; border-radius: 4px; display: inline-block; margin-bottom: 1rem; font-weight: bold; }
+        
+        /* Estilos específicos para a demonstração mobile */
+        .demo-mobile-wrapper { width: 300px; height: 200px; border: 8px solid #333; border-radius: 20px; overflow: hidden; position: relative; margin: 0 auto; background-color: #f8f9fa; }
+        .demo-mobile-wrapper nav { position: relative; z-index: 1000; }
+        .demo-mobile-wrapper .nav-links { position: absolute; top: 52px; left: -100%; width: 100%; background-color: var(--branco); flex-direction: column; box-shadow: 0 5px 10px rgba(0,0,0,0.1); transition: left 0.3s ease; }
+        .demo-mobile-wrapper .nav-links.active { left: 0; }
+        .demo-mobile-wrapper .nav-link { text-align: center; border-bottom: 1px solid var(--azul-claro); }
+        .demo-mobile-wrapper .hamburger { display: flex; }
+        
+        /* Estilos para demonstração de grid */
+        .demo-grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            padding: 15px;
+        }
+        .demo-grid-item {
+            background-color: var(--azul-claro);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        /* Estilos para demonstração de tabela */
+        .demo-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8em;
+            margin: 1rem 0;
+        }
+        .demo-table th, .demo-table td {
+            padding: 0.5rem;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .demo-table th {
+            background-color: var(--azul-claro);
+            color: var(--azul-escuro);
+        }
+
+        /* Estilos para o gráfico */
+        .chart-demo-container {
+            height: 400px;
+            width: 100%;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            
+            <!-- Slide de Abertura -->
+            <section>
+                <h2>Análise das Tecnologias</h2>
+                <h3>Página de Conscientização "Novembro Azul"</h3>
+                <p>Uma demonstração interativa de como HTML, CSS e JavaScript constroem uma página web moderna.</p>
+                <div style="margin-top: 30px;">
+                    <span class="tech-badge">HTML5 Semântico</span>
+                    <span class="tech-badge">CSS Responsivo</span>
+                    <span class="tech-badge">JavaScript ES6+</span>
+                    <span class="tech-badge">Chart.js</span>
+                    <span class="tech-badge">LGPD</span>
+                    <span class="tech-badge">Acessibilidade</span>
+                </div>
+            </section>
+
+            <!-- Slide de Ambiente de Desenvolvimento -->
+            <section>
+                <section>
+                    <h3>1. Ambiente de Desenvolvimento</h3>
+                    <p>Desenvolvido no <strong>Visual Studio Code</strong> com a extensão <strong>Live Server</strong>:</p>
+                    <ul class="feature-list">
+                        <li>Atualização automática no navegador a cada alteração no código</li>
+                        <li>Execução local sem erros de CORS</li>
+                        <li>Possibilita carregamento de arquivos (como dados.csv) via Fetch API</li>
+                    </ul>
+                    <p class="navigation-tip">▼ Clique para ver detalhes da estrutura ▼</p>
+                </section>
+                
+                <section>
+                    <h3>Estrutura do Projeto</h3>
+                    <div class="two-columns">
+                        <div class="column">
+                            <h4>Arquivos do Projeto</h4>
+                            <div style="background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 4px; font-family: monospace; font-size: 0.7em;">
+                                <div>projeto-novembro-azul/</div>
+                                <div style="margin-left: 1rem;">├── <span class="code-highlight">index.html</span></div>
+                                <div style="margin-left: 1rem;">├── <span class="code-highlight">dados.csv</span></div>
+                                <div style="margin-left: 1rem;">└── README.md</div>
+                            </div>
+                        </div>
+                        <div class="column">
+                            <h4>Formato dos Dados CSV</h4>
+                            <pre style="font-size: 0.65em;"><code data-trim data-line-numbers="1|2-4">
+PROCEDIMENTO;Jan/25;Fev/25;Mar/25...
+0201010410 BIOPSIA DE PROSTATA;15;12;18...
+0202030105 DOSAGEM DE ANTIGENO...;120;115;130...
+0301010072 CONSULTA MEDICA EM...;300;280;320...
+                            </code></pre>
+                            <p style="font-size: 0.7em; text-align: left; margin-top: 10px;">
+                                <span class="code-highlight">Dados reais do DATASUS</span> com códigos de procedimento do SUS
+                            </p>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- Slide de HTML -->
+            <section>
+                <section>
+                    <h3>2. A Estrutura com HTML5 Semântico</h3>
+                    <p>O HTML define a estrutura e o significado de cada parte da página, melhorando acessibilidade e SEO.</p>
+                    <div class="two-columns">
+                        <div class="column demo-col">
+                            <h4>Resultado Visual</h4>
+                            <div class="live-demo demo-container">
+                                <header>
+                                    <div class="logo-container">
+                                        <div class="logo"><i>👨🏻</i></div>
+                                        <div>
+                                            <h1>Novembro Azul</h1>
+                                            <p class="subtitle">Mês Mundial de Combate ao Câncer de Próstata</p>
+                                        </div>
+                                    </div>
+                                </header>
+                                <nav>
+                                    <div class="nav-container">
+                                        <div class="hamburger"><span></span><span></span><span></span></div>
+                                        <div class="nav-links">
+                                            <a href="#sobre" class="nav-link">Sobre</a>
+                                            <a href="#dados" class="nav-link">Dados</a>
+                                            <a href="#prevencao" class="nav-link">Prevenção</a>
+                                        </div>
+                                    </div>
+                                </nav>
+                            </div>
+                        </div>
+                        <div class="column code-col">
+                            <h4>Código HTML Semântico</h4>
+                            <pre><code data-trim data-line-numbers="1-2|4-6|8-10|12-14|16-18" class="html">
+&lt;!-- Estrutura semântica para acessibilidade --&gt;
+&lt;header&gt;
+    &lt;div class="logo-container"&gt;
+        &lt;div class="logo"&gt;
+            &lt;i&gt;👨🏻&lt;/i&gt; &lt;!-- Emoji Unicode --&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+            &lt;h1&gt;Novembro Azul&lt;/h1&gt;
+            &lt;p class="subtitle"&gt;Mês Mundial de Combate...&lt;/p&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/header&gt;
+
+&lt;nav&gt;
+    &lt;div class="nav-container"&gt;
+        &lt;div class="hamburger" id="hamburger"&gt;
+            &lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div class="nav-links" id="navLinks"&gt;
+            &lt;a href="#sobre" class="nav-link"&gt;Sobre&lt;/a&gt;
+            &lt;!-- Mais links de navegação --&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/nav&gt;
+                            </code></pre>
+                        </div>
+                    </div>
+                </section>
+                
+                <section>
+                    <h4>Elementos Semânticos Principais</h4>
+                    <pre><code data-trim data-line-numbers="1-3|5-7|9-11|13-15" class="html">
+&lt;!-- Conteúdo principal da página --&gt;
+&lt;main&gt;
+    &lt;section id="sobre"&gt;
+        &lt;h2 class="section-title"&gt;Sobre o Novembro Azul&lt;/h2&gt;
+        &lt;div class="card"&gt;
+            &lt;!-- Conteúdo informativo --&gt;
+        &lt;/div&gt;
+    &lt;/section&gt;
+
+    &lt;section id="dados"&gt;
+        &lt;h2 class="section-title"&gt;Dados de Saúde&lt;/h2&gt;
+        &lt;div class="chart-container"&gt;
+            &lt;canvas id="mainChart"&gt;&lt;/canvas&gt;
+        &lt;/div&gt;
+    &lt;/section&gt;
+
+    &lt;footer&gt;
+        &lt;!-- Informações LGPD e links --&gt;
+    &lt;/footer&gt;
+&lt;/main&gt;
+                    </code></pre>
+                </section>
+            </section>
+
+            <!-- Slide de CSS -->
+            <section>
+                <section>
+                    <h3>3. O Estilo com CSS Moderno</h3>
+                    <p>CSS é usado para estilizar os elementos HTML, definindo cores, fontes e layouts responsivos.</p>
+                    <p class="navigation-tip">▼ Veja os recursos CSS utilizados ▼</p>
+                </section>
+                
+                <section>
+                    <h4>Variáveis CSS para Consistência</h4>
+                    <pre><code data-trim data-line-numbers="1-6|8-12|14-18" class="css">
+/* Definição de variáveis para todo o tema */
+:root {
+    --azul-principal: #007bff;
+    --azul-escuro: #0056b3;
+    --cinza-claro: #f8f9fa;
+    --branco: #ffffff;
+}
+
+/* Uso consistente das variáveis */
+header {
+    background: linear-gradient(135deg, 
+        var(--azul-principal), 
+        var(--azul-escuro));
+    color: var(--branco);
+}
+
+.card {
+    background-color: var(--branco);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+                    </code></pre>
+                </section>
+                
+                <section>
+                    <h4>CSS Grid para Layout Responsivo</h4>
+                    <div class="two-columns">
+                        <div class="column demo-col">
+                            <h4>Resultado Visual</h4>
+                            <div class="live-demo demo-container">
+                                <div class="demo-grid-container">
+                                    <div class="demo-grid-item">Card 1</div>
+                                    <div class="demo-grid-item">Card 2</div>
+                                    <div class="demo-grid-item">Card 3</div>
+                                    <div class="demo-grid-item">Card 4</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="column code-col">
+                            <h4>Código CSS Grid</h4>
+                            <pre><code data-trim data-line-numbers="1-4|6-9" class="css">
+/* Grid responsivo automático */
+.grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+                            </code></pre>
+                        </div>
+                    </div>
+                </section>
+            </section>
+            
+            <!-- Slide de Responsividade -->
+            <section>
+                <section>
+                    <h3>4. Design Responsivo (Mobile)</h3>
+                    <p>A página é totalmente responsiva, adaptando-se a diferentes telas através de:</p>
+                    <ul class="feature-list">
+                        <li><strong>Media Queries</strong>: ajustes de layout, menu "hambúrguer" e fontes</li>
+                        <li><strong>Flexbox</strong>: alinhamento dinâmico em cabeçalhos e menus</li>
+                        <li><strong>CSS Grid</strong>: disposição automática dos cards</li>
+                    </ul>
+                    <p class="navigation-tip">▼ Veja o menu mobile em ação ▼</p>
+                </section>
+                
+                <section>
+                    <h3>Menu Mobile Interativo</h3>
+                    <p>Clique no ícone para abrir e fechar o menu.</p>
+                    <div class="demo-container demo-mobile-wrapper">
+                        <nav>
+                            <div class="nav-container">
+                                <div class="hamburger" id="hamburger-demo"><span></span><span></span><span></span></div>
+                                <div class="nav-links" id="navLinks-demo">
+                                    <a href="#sobre" class="nav-link">Sobre</a>
+                                    <a href="#dados" class="nav-link">Dados</a>
+                                    <a href="#prevencao" class="nav-link">Prevenção</a>
+                                </div>
+                            </div>
+                        </nav>
+                    </div>
+                </section>
+                
+                <section>
+                    <h4>Media Query para Mobile</h4>
+                    <pre><code data-trim data-line-numbers="1-2|3-7|8-10|11-13" class="css">
+/* Breakpoint para tablets e mobile */
+@media (max-width: 768px) {
+    .nav-links {
+        position: fixed;
+        left: -100%; /* Esconde o menu */
+        transition: left 0.3s ease;
+    }
+    .nav-links.active {
+        left: 0; /* Mostra o menu */
+    }
+    .hamburger {
+        display: flex; /* Exibe o ícone hambúrguer */
+    }
+}
+                    </code></pre>
+                </section>
+                
+                <section>
+                    <h4>JavaScript para Controle do Menu</h4>
+                    <pre><code data-trim data-line-numbers="1-2|4-9|11-13" class="javascript">
+// Seleciona os elementos do DOM
+const hamburger = document.getElementById('hamburger');
+const navLinks = document.getElementById('navLinks');
+
+// Adiciona o evento de clique
+hamburger.addEventListener('click', () => {
+    // Alterna as classes active
+    navLinks.classList.toggle('active');
+    hamburger.classList.toggle('active');
+});
+
+// Fecha o menu ao clicar em um link
+document.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', () => {
+        navLinks.classList.remove('active');
+        hamburger.classList.remove('active');
+    });
+});
+                    </code></pre>
+                </section>
+            </section>
+
+            <!-- Slide de JavaScript Moderno -->
+            <section>
+                <section>
+                    <h3>5. JavaScript ES6+ e Estruturas de Controle</h3>
+                    <p>O JavaScript utiliza práticas modernas e está organizado em funções modulares.</p>
+                    <ul class="feature-list">
+                        <li><strong>Funções modulares</strong>: parseCSV, loadData, initChart, updateChart</li>
+                        <li><strong>Estruturas de controle</strong>: condicionais, ternários, try...catch</li>
+                        <li><strong>Async/Await</strong> para carregamento assíncrono de dados</li>
+                        <li><strong>Manipulação de arrays</strong> com .map(), .filter()</li>
+                        <li><strong>Uso consistente</strong> de let e const</li>
+                    </ul>
+                    <p class="navigation-tip">▼ Veja exemplos de código ▼</p>
+                </section>
+                
+                <section>
+                    <h4>Carregamento de Dados com Fetch API</h4>
+                    <pre><code data-trim data-line-numbers="1-3|5-7|9-12|14-16" class="javascript">
+// Função assíncrona para carregar dados
+async function loadData() {
+    try {
+        // Fetch API para carregar o CSV
+        const response = await fetch('dados.csv');
+        if (!response.ok) throw new Error('Erro ao carregar dados');
+        
+        const csvText = await response.text();
+        // Processa os dados
+        chartData = parseCSV(csvText);
+        return true;
+    } catch (error) {
+        console.error("Falha ao carregar dados:", error);
+        return false;
+    }
+}
+                    </code></pre>
+                </section>
+                
+                <section>
+                    <h4>Processamento de Dados CSV</h4>
+                    <pre><code data-trim data-line-numbers="1-5|7-12|14-20|22-28" class="javascript">
+// Processa o formato CSV do DATASUS
+function parseCSV(csvText) {
+    const lines = csvText.trim().split('\n');
+    const headers = lines.shift().split(';').map(h => h.trim());
+    
+    // Mapeamento dos códigos de procedimento
+    const procedureMap = {
+        "0201010410 BIOPSIA DE PROSTATA": "Biópsias de Próstata",
+        "0202030105 DOSAGEM DE ANTIGENO PROSTATICO ESPECIFICO (PSA)": "Exames de PSA",
+        "0301010072 CONSULTA MEDICA EM ATENCAO ESPECIALIZADA": "Consultas Especializadas"
+    };
+    
+    // Cria estrutura de dados mensal
+    const monthlyData = headers.slice(1).map(month => ({ 
+        "Mês": month 
+    }));
+    
+    // Processa cada linha de dados
+    lines.forEach(line => {
+        const values = line.split(';');
+        const procedureName = values[0].trim();
+        const cleanName = procedureMap[procedureName];
+        
+        if (cleanName) {
+            values.slice(1).forEach((value, index) => {
+                monthlyData[index][cleanName] = parseInt(value) || 0;
+            });
+        }
+    });
+    
+    return monthlyData;
+}
+                    </code></pre>
+                </section>
+            </section>
+
+            <!-- Slide de Bibliotecas JS -->
+            <section>
+                <section>
+                    <h2>6. Bibliotecas JavaScript: Chart.js</h2>
+                    <p>Para criar o gráfico de dados de forma rápida e com animações, foi usada a biblioteca externa Chart.js.</p>
+                    <p class="navigation-tip">▼ Veja o gráfico interativo ▼</p>
+                </section>
+                
+                <section>
+                    <h3>Gráfico com Múltiplos Eixos Y</h3>
+                    <div class="chart-demo-container">
+                         <canvas id="demoChart"></canvas>
+                    </div>
+                </section>
+                
+                <section>
+                    <h4>Configuração Avançada do Chart.js</h4>
+                    <pre><code data-trim data-line-numbers="1-7|9-16|18-25|27-35" class="javascript">
+// Configuração do gráfico com múltiplos eixos
+function getChartConfig() {
+    const labels = chartData.map(item => item.Mês);
+    
+    const datasets = selectedSeries.map(series => ({
+        label: series,
+        data: chartData.map(item => item[series]),
+        borderColor: colors[series],
+        backgroundColor: colors[series] + '90',
+        type: (series === 'Consultas Especializadas') ? 'line' : 'bar',
+        // Diferencial: Múltiplos eixos Y
+        yAxisID: (series === 'Consultas Especializadas') ? 
+                 'yConsultas' : 'yProcedimentos'
+    }));
+    
+    return {
+        data: { labels, datasets },
+        options: {
+            responsive: true,
+            scales: {
+                // Eixo Y para Consultas (esquerda)
+                yConsultas: {
+                    type: 'linear',
+                    position: 'left',
+                    beginAtZero: true,
+                    title: { display: true, text: 'Nº de Consultas' }
+                },
+                // Eixo Y para Exames (direita)
+                yProcedimentos: {
+                    type: 'linear',
+                    position: 'right',
+                    beginAtZero: true,
+                    title: { display: true, text: 'Nº de Exames / Biópsias' },
+                    grid: { drawOnChartArea: false }
+                }
+            }
+        }
+    };
+}
+                    </code></pre>
+                </section>
+            </section>
+            
+            <!-- Slide LGPD e Acessibilidade -->
+            <section>
+                <section>
+                    <h2>7. LGPD e Acessibilidade</h2>
+                    <p>A página demonstra responsabilidade e transparência com os dados do usuário.</p>
+                    <div class="two-columns">
+                        <div class="column">
+                            <h4>Conformidade com LGPD</h4>
+                            <ul class="feature-list">
+                                <li>Seção de privacidade dedicada</li>
+                                <li>Informa que não há coleta de dados pessoais</li>
+                                <li>Não utiliza cookies</li>
+                                <li>Dados anonimizados do DATASUS</li>
+                            </ul>
+                        </div>
+                        <div class="column">
+                            <h4>Acessibilidade</h4>
+                            <ul class="feature-list">
+                                <li>HTML semântico</li>
+                                <li>Linguagem clara</li>
+                                <li>Bom contraste de cores</li>
+                                <li>Navegação por teclado</li>
+                                <li>Estrutura que facilita leitores de tela</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <p class="navigation-tip">▼ Veja a implementação LGPD ▼</p>
+                </section>
+                
+                <section>
+                    <h4>Implementação da LGPD</h4>
+                    <pre><code data-trim data-line-numbers="1-3|5-9|11-15" class="html">
+&lt;!-- Seção dedicada à privacidade --&gt;
+&lt;section id="privacidade"&gt;
+    &lt;h2 class="section-title"&gt;Privacidade e Proteção de Dados&lt;/h2&gt;
+    &lt;div class="card"&gt;
+        &lt;div class="lgpd-notice"&gt;
+            &lt;div class="lgpd-header"&gt;🔒 COMPROMISSO COM A LGPD&lt;/div&gt;
+            &lt;p&gt;Esta plataforma educacional foi desenvolvida 
+            em conformidade com a Lei Geral de Proteção de Dados...&lt;/p&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/section&gt;
+
+&lt;footer&gt;
+    &lt;div class="copyright"&gt;
+        &lt;strong&gt;Conformidade LGPD:&lt;/strong&gt; 
+        Esta plataforma não utiliza cookies nem coleta dados pessoais.
+    &lt;/div&gt;
+&lt;/footer&gt;
+                    </code></pre>
+                </section>
+            </section>
+
+            <!-- Slide de Funcionalidades Avançadas -->
+            <section>
+                <section>
+                    <h3>8. Funcionalidades Interativas</h3>
+                    <p>A página inclui várias funcionalidades avançadas para melhor experiência do usuário.</p>
+                    <p class="navigation-tip">▼ Veja as funcionalidades em detalhe ▼</p>
+                </section>
+                
+                <section>
+                    <h4>Seletor Interativo de Séries</h4>
+                    <div class="two-columns">
+                        <div class="column">
+                            <pre><code data-trim data-line-numbers="1-5|7-14|16-18" class="javascript">
+// Cria seletor de séries dinâmico
+function createSeriesSelector() {
+    const availableSeries = Object.keys(chartData[0])
+                                 .filter(k => k !== 'Mês');
+    
+    availableSeries.forEach(series => {
+        const isChecked = selectedSeries.includes(series);
+        const checkboxHTML = `
+            &lt;div class="series-checkbox"&gt;
+                &lt;input type="checkbox" id="series-${series}" 
+                       ${isChecked ? 'checked' : ''}
+                       onchange="toggleSeries('${series}')"&gt;
+                &lt;label for="series-${series}"&gt;${series}&lt;/label&gt;
+            &lt;/div&gt;`;
+        selectorContainer.innerHTML += checkboxHTML;
+    });
+}
+
+// Alterna exibição das séries
+function toggleSeries(series) {
+    const index = selectedSeries.indexOf(series);
+    if (index > -1) selectedSeries.splice(index, 1);
+    else selectedSeries.push(series);
+    updateChart();
+}
+                            </code></pre>
+                        </div>
+                        <div class="column">
+                            <h4>Tabela de Dados Dinâmica</h4>
+                            <div class="live-demo demo-container">
+                                <table class="demo-table">
+                                    <thead>
+                                        <tr><th>Mês</th><th>Consultas</th><th>Exames PSA</th><th>Biópsias</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td>Jan/25</td><td>300</td><td>120</td><td>15</td></tr>
+                                        <tr><td>Fev/25</td><td>280</td><td>115</td><td>12</td></tr>
+                                        <tr style="font-weight: bold; background: #e9ecef;"><td>Total</td><td>580</td><td>235</td><td>27</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- SLIDE DE CONCLUSÃO -->
+            <section>
+                <h2>Resumo Final</h2>
+                <p>A página "Novembro Azul" combina HTML5 semântico, CSS responsivo e JavaScript moderno, com foco em:</p>
+                <ul class="feature-list">
+                    <li><strong>Interatividade</strong>: Gráficos dinâmicos com múltiplos eixos Y e menu responsivo</li>
+                    <li><strong>Acessibilidade</strong>: Estrutura semântica e contraste adequado</li>
+                    <li><strong>Privacidade</strong>: Conformidade total com LGPD</li>
+                    <li><strong>Código limpo e modular</strong>: Funções bem organizadas e reutilizáveis</li>
+                    <li><strong>Visualização de dados clara</strong>: Gráficos informativos com dados reais do DATASUS</li>
+                    <li><strong>Responsividade</strong>: Adaptação perfeita a todos os dispositivos</li>
+                </ul>
+                <div style="margin-top: 40px;">
+                    <h3>Obrigado!</h3>
+                    <p><strong>Perguntas?</strong></p>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/plugin/highlight/highlight.min.js"></script>
+    <script>
+        // Inicialização do Reveal.js
+        Reveal.initialize({
+            hash: true,
+            plugins: [RevealHighlight],
+            width: 1280,
+            height: 720,
+            transition: 'slide',
+            transitionSpeed: 'default'
+        });
+
+        // Inicializa os componentes quando os slides estiverem prontos
+        Reveal.addEventListener('ready', function(event) {
+            // Menu Hambúrguer interativo
+            const hamburger = document.getElementById('hamburger-demo');
+            const navLinks = document.getElementById('navLinks-demo');
+            
+            if(hamburger && navLinks) {
+                hamburger.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    hamburger.classList.toggle('active');
+                    navLinks.classList.toggle('active');
+                });
+            }
+
+            // Gráfico demonstrativo
+            const ctx = document.getElementById('demoChart');
+            if (ctx) {
+                // Destruir gráfico existente se houver
+                if (window.demoChartInstance) {
+                    window.demoChartInstance.destroy();
+                }
+                
+                window.demoChartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Jan/25', 'Fev/25', 'Mar/25', 'Abr/25', 'Mai/25', 'Jun/25'],
+                        datasets: [
+                            {
+                                label: 'Consultas Especializadas',
+                                data: [300, 280, 320, 310, 290, 330],
+                                borderColor: '#007bff',
+                                backgroundColor: '#007bff20',
+                                borderWidth: 2,
+                                type: 'line',
+                                tension: 0.3,
+                                yAxisID: 'yConsultas'
+                            },
+                            {
+                                label: 'Exames de PSA',
+                                data: [120, 115, 130, 125, 110, 135],
+                                backgroundColor: '#17a2b8',
+                                yAxisID: 'yProcedimentos'
+                            },
+                            {
+                                label: 'Biópsias de Próstata',
+                                data: [15, 12, 18, 14, 11, 16],
+                                backgroundColor: '#28a745',
+                                yAxisID: 'yProcedimentos'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { 
+                            legend: { 
+                                position: 'top',
+                                labels: {
+                                    usePointStyle: true,
+                                    padding: 15
+                                }
+                            },
+                            title: { 
+                                display: true, 
+                                text: 'Procedimentos Mensais - Juiz de Fora/MG',
+                                font: { size: 16, weight: 'bold' }
+                            }
+                        },
+                        scales: {
+                            yConsultas: {
+                                type: 'linear',
+                                position: 'left',
+                                beginAtZero: true,
+                                title: { 
+                                    display: true, 
+                                    text: 'Nº de Consultas',
+                                    font: { weight: 'bold' }
+                                },
+                                grid: {
+                                    color: 'rgba(0,0,0,0.1)'
+                                }
+                            },
+                            yProcedimentos: {
+                                type: 'linear',
+                                position: 'right',
+                                beginAtZero: true,
+                                title: { 
+                                    display: true, 
+                                    text: 'Nº de Exames / Biópsias',
+                                    font: { weight: 'bold' }
+                                },
+                                grid: { 
+                                    drawOnChartArea: false
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    color: 'rgba(0,0,0,0.1)'
+                                }
+                            }
+                        },
+                        interaction: {
+                            mode: 'index',
+                            intersect: false
+                        },
+                        animation: {
+                            duration: 1000,
+                            easing: 'easeOutQuart'
+                        }
+                    }
+                });
+            }
+        });
+
+        // Limpa gráfico quando sair do slide
+        Reveal.addEventListener('slidechanged', function(event) {
+            // Se não estamos mais no slide do gráfico, destruí-lo
+            const currentSlide = event.currentSlide;
+            const hasChart = currentSlide.querySelector('#demoChart');
+            
+            if (!hasChart && window.demoChartInstance) {
+                window.demoChartInstance.destroy();
+                window.demoChartInstance = null;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sumário - Projeto Novembro Azul</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --azul-principal: #007bff;
+            --azul-escuro: #0056b3;
+            --azul-claro: #cce5ff;
+            --cinza-claro: #f8f9fa;
+            --cinza-escuro: #343a40;
+            --branco: #ffffff;
+            --verde: #28a745;
+            --sombra: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--azul-claro), var(--branco));
+            color: var(--cinza-escuro);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 3rem 1rem;
+            background: linear-gradient(135deg, var(--azul-principal), var(--azul-escuro));
+            color: var(--branco);
+            border-radius: 15px;
+            margin-bottom: 3rem;
+            box-shadow: var(--sombra);
+        }
+
+        .logo {
+            width: 100px;
+            height: 100px;
+            background-color: var(--branco);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2.5rem;
+            box-shadow: var(--sombra);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .card {
+            background: var(--branco);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: var(--sombra);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 2px solid transparent;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+            border-color: var(--azul-principal);
+        }
+
+        .card-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--azul-claro);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2rem;
+            color: var(--azul-principal);
+        }
+
+        .card h3 {
+            color: var(--azul-escuro);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .card p {
+            color: var(--cinza-escuro);
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--azul-principal), var(--azul-escuro));
+            color: var(--branco);
+            padding: 12px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 123, 255, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 123, 255, 0.4);
+        }
+
+        .btn-external {
+            background: linear-gradient(135deg, var(--verde), #20c997);
+        }
+
+        .status-section {
+            background: var(--branco);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: var(--sombra);
+            margin-bottom: 2rem;
+        }
+
+        .status-section h2 {
+            color: var(--azul-escuro);
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background: var(--cinza-claro);
+            border-radius: 10px;
+        }
+
+        .status-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .status-completed {
+            background: var(--verde);
+            color: white;
+        }
+
+        .status-progress {
+            background: #ffc107;
+            color: black;
+        }
+
+        .status-pending {
+            background: #6c757d;
+            color: white;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--cinza-escuro);
+            border-top: 1px solid var(--azul-claro);
+            margin-top: 3rem;
+        }
+
+        .performance-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">👨🏻</div>
+            <h1>Projeto Novembro Azul</h1>
+            <p class="subtitle">Conscientização sobre o Câncer de Próstata - Portal de Navegação</p>
+        </header>
+
+        <div class="cards-grid">
+            <div class="card">
+                <div class="card-icon">🌐</div>
+                <h3>Página Oficial</h3>
+                <p>Acesse a página principal do projeto Novembro Azul com todas as informações sobre conscientização, dados de saúde e prevenção.</p>
+                <div style="margin-top: auto;">
+                    <a href="https://marckcm.github.io/novembro-azul/" class="btn btn-external" target="_blank">
+                        Acessar Página Oficial
+                    </a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">📊</div>
+                <h3>Relatório do Projeto</h3>
+                <p>Visualize o relatório completo do desenvolvimento, cronograma, resultados de performance e análise do PageSpeed Insights.</p>
+                <div class="performance-badge">Performance: 100/100</div>
+                <div style="margin-top: auto;">
+                    <a href="projeto-resultados.html" class="btn">
+                        Ver Relatório Completo
+                    </a>
+                </div>
+            </div>
+
+            <!-- <div class="card">
+                <div class="card-icon">💻</div>
+                <h3>Análise das Tecnologias</h3>
+                <p>Explore a análise detalhada das tecnologias utilizadas no projeto, incluindo HTML5, CSS3, JavaScript e Chart.js.</p>
+                <div style="margin-top: auto;">
+                    <a href="tecnologias.html" class="btn">
+                        Ver Análise Técnica
+                    </a>
+                </div>
+            </div> -->
+        </div>
+
+        <div class="status-section">
+            <h2>Status do Projeto</h2>
+            <div class="status-grid">
+                <div class="status-item">
+                    <div class="status-icon status-completed">✓</div>
+                    <div>
+                        <strong>Página Oficial</strong>
+                        <div>Publicada e Funcional</div>
+                    </div>
+                </div>
+                <div class="status-item">
+                    <div class="status-icon status-completed">✓</div>
+                    <div>
+                        <strong>Performance</strong>
+                        <div>Otimizada (99/100)</div>
+                    </div>
+                </div>
+                <div class="status-item">
+                    <div class="status-icon status-progress">⚡</div>
+                    <div>
+                        <strong>Documentação</strong>
+                        <div>Em Desenvolvimento</div>
+                    </div>
+                </div>
+                <div class="status-item">
+                    <div class="status-icon status-pending">📅</div>
+                    <div>
+                        <strong>Entrega Final</strong>
+                        <div>12/11/2025</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p><strong>Projeto Novembro Azul</strong> - Desenvolvido para fins educacionais</p>
+            <p>Conformidade LGPD: Esta plataforma não utiliza cookies nem coleta dados pessoais</p>
+            <p style="margin-top: 1rem; font-size: 0.9rem; color: #6c757d;">
+                &copy; 2025 - Todos os direitos reservados
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // Adiciona animação suave ao carregar a página
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+        });
+
+        // Adiciona feedback visual ao clicar nos botões
+        document.querySelectorAll('.btn').forEach(button => {
+            button.addEventListener('click', function(e) {
+                // Efeito de ripple
+                const ripple = document.createElement('span');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = x + 'px';
+                ripple.style.top = y + 'px';
+                ripple.classList.add('ripple');
+                
+                this.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+        });
+
+        // Adiciona estilos para o efeito ripple
+        const style = document.createElement('style');
+        style.textContent = `
+            .ripple {
+                position: absolute;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.6);
+                transform: scale(0);
+                animation: ripple-animation 0.6s linear;
+            }
+            
+            @keyframes ripple-animation {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+            
+            .btn {
+                position: relative;
+                overflow: hidden;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
